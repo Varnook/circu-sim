@@ -1,5 +1,6 @@
 use crate::base_gates::gate_error::GateError;
 use crate::base_gates::gate_type::GateType;
+use std::convert;
 
 #[derive(PartialEq)]
 pub struct Gate {
@@ -38,6 +39,13 @@ impl Gate {
         Ok(g)
     }
 
+    pub fn set_inputs(&mut self, inputs: Vec<(usize, u64)>) {
+        for (i, val) in inputs {
+            self.inputs[i] = val;
+        }
+        self.logic();
+    }
+
     fn logic(&mut self) {
         let operation = match self.gate_type {
             GateType::And => |a, b| a & b,
@@ -61,7 +69,7 @@ mod tests {
 
     #[test]
     fn new_gate() {
-        let g = Gate::new(GateType::And, 2, 8)?;
+        let g = Gate::new(GateType::And, 2, 8).unwrap();
         assert_eq!(g.gate_type, GateType::And);
         assert_eq!(g.input_size, 2);
         assert_eq!(g.bus_size_mask, 255);
@@ -75,5 +83,19 @@ mod tests {
     fn new_not_gate() {
         let g = Gate::new(GateType::Not, 1, 4).unwrap();
         assert_eq!(g.output, 15);
+    }
+
+    #[test]
+    fn set_2_input_gate() {
+        let mut g = Gate::new(GateType::And, 2, 16).unwrap();
+        g.set_inputs([(0, 0xFF33), (1, 0x33B3)].to_vec());
+        assert_eq!(g.output, 0x3333);
+    }
+
+    #[test]
+    fn set_3_input_gate() {
+        let mut g = Gate::new(GateType::And, 3, 4).unwrap();
+        g.set_inputs([(0, 0x3), (1, 0x7), (2, 0xF)].to_vec());
+        assert_eq!(g.output, 0x3);
     }
 }
