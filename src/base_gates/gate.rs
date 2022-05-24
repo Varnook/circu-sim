@@ -63,6 +63,27 @@ impl Gate {
     }
 }
 
+impl<const N: usize> TryFrom<(GateType, usize, u64, [u64; N])> for Gate {
+    type Error = GateError;
+    fn try_from(data: (GateType, usize, u64, [u64; N])) -> Result<Self, GateError> {
+        let (gate_type, input_size, bus_size, inputs) = data;
+        if input_size < inputs.len() {
+            return Err(GateError::GateInputSmallerThanGiven(
+                input_size,
+                inputs.len(),
+            ));
+        }
+
+        let mut g = Gate::new(gate_type, input_size, bus_size)?;
+        for (i, input) in inputs.iter().enumerate() {
+            g.inputs[i] = *input;
+        }
+
+        g.logic();
+        Ok(g)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
