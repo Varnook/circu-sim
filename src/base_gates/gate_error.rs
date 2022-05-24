@@ -7,6 +7,7 @@ pub enum GateError {
     BusTooBig(u64),
     NotGateGT1Input(usize),
     DoubleEntryGateLT2Inputs(GateType),
+    GateInputSmallerThanGiven(usize, usize),
 }
 
 impl fmt::Display for GateError {
@@ -20,6 +21,9 @@ impl fmt::Display for GateError {
             ),
             GateError::DoubleEntryGateLT2Inputs(t) => {
                 write!(f, "{} gate set with 1 input; at least 2 are needed.", t)
+            }
+            GateError::GateInputSmallerThanGiven(size, given) => {
+                write!(f, "Gate has {} inputs, but {} were set", size, given)
             }
         }
     }
