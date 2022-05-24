@@ -39,11 +39,19 @@ impl Gate {
         Ok(g)
     }
 
-    pub fn set_inputs(&mut self, inputs: Vec<(usize, u64)>) {
+    pub fn set_inputs(&mut self, inputs: Vec<(usize, u64)>) -> Result<(), GateError> {
+        if self.input_size < inputs.len() {
+            return Err(GateError::GateInputSmallerThanGiven(
+                self.input_size,
+                inputs.len(),
+            ));
+        }
+
         for (i, val) in inputs {
             self.inputs[i] = val;
         }
         self.logic();
+        Ok(())
     }
 
     fn logic(&mut self) {
