@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(PartialEq, Debug, Clone)]
+#[derive(PartialEq, Debug, Clone, Eq, Hash)]
 pub enum GateType {
     Not,
     And,

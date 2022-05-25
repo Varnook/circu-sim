@@ -2,7 +2,7 @@ use crate::base_gates::gate_error::GateError;
 use crate::base_gates::gate_type::GateType;
 use std::convert;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq, Hash)]
 pub struct Gate {
     gate_type: GateType,
     input_size: usize,
