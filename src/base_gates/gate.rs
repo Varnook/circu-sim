@@ -117,14 +117,21 @@ mod tests {
     #[test]
     fn set_2_input_gate() {
         let mut g = Gate::new(GateType::And, 2, 16).unwrap();
-        g.set_inputs([(0, 0xFF33), (1, 0x33B3)].to_vec());
+        g.set_inputs([(0, 0xFF33), (1, 0x33B3)].to_vec()).unwrap();
         assert_eq!(g.output, 0x3333);
     }
 
     #[test]
     fn set_3_input_gate() {
         let mut g = Gate::new(GateType::And, 3, 4).unwrap();
-        g.set_inputs([(0, 0x3), (1, 0x7), (2, 0xF)].to_vec());
+        g.set_inputs([(0, 0x3), (1, 0x7), (2, 0xF)].to_vec())
+            .unwrap();
         assert_eq!(g.output, 0x3);
+    }
+
+    #[test]
+    fn try_from_new_gate() {
+        let g = Gate::try_from((GateType::Xor, 4, 8, [0xFF, 0x03])).unwrap();
+        assert_eq!(g.output, 0xFC);
     }
 }
