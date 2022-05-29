@@ -1,4 +1,5 @@
 use crate::base_gates::gate::Gate;
+use crate::base_gates::gate_error::GateError;
 use std::collections::HashMap;
 
 #[derive(PartialEq)]
@@ -20,8 +21,12 @@ impl<'a> Cable<'a> {
     }
 
     /// Connects a cable to a single gate's input.
-    pub fn connect_input(mut self, gate_to_connect: &'a mut Gate, input_to_connect: usize) {
-        gate_to_connect.set_inputs(vec![(input_to_connect, self.value)]);
+    pub fn connect_input(
+        mut self,
+        gate_to_connect: &'a mut Gate,
+        input_to_connect: usize,
+    ) -> Result<(), GateError> {
+        gate_to_connect.set_inputs(vec![(input_to_connect, self.value)])?;
 
         match self.connected_inputs.get_mut(gate_to_connect) {
             Some(gate_inputs) => {
@@ -34,6 +39,7 @@ impl<'a> Cable<'a> {
                     .insert(gate_to_connect, vec![input_to_connect]);
             }
         }
+        Ok(())
     }
 
     pub fn connect_output(mut self, gate_to_connect: &'a Gate) {
