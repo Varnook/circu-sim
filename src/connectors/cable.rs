@@ -58,6 +58,7 @@ impl<'a> Cable<'a> {
 mod tests {
     use super::*;
     use crate::base_gates::gate_type::GateType;
+
     #[test]
     fn connect_gate() {
         let mut g_in = Gate::new(GateType::Or, 2, 1).unwrap();
@@ -67,5 +68,15 @@ mod tests {
         assert_eq!(g_in.get_output(), 0);
         ca.connect_input(&mut g_in, 0);
         assert_eq!(g_in.get_output(), 1);
+    }
+
+    #[test]
+    fn connect_not_gate() {
+        let g_out = Gate::new(GateType::Not, 1, 4).unwrap();
+        let mut g_in = Gate::new(GateType::Or, 2, 4).unwrap();
+        let mut cable = Cable::new(4);
+        cable.connect_output(&g_out);
+        cable.connect_input(&mut g_in, 0);
+        assert_eq!(g_in.get_output(), 0xF);
     }
 }
