@@ -7,10 +7,18 @@ struct Cable<'a> {
     value: u64,
     size: usize,
     connected_inputs: HashMap<&'a Gate, Vec<usize>>,
-    connected_output: &'a Gate,
+    connected_output: Option<&'a Gate>,
 }
 
 impl<'a> Cable<'a> {
+    pub fn new(size: usize) {
+        Cable {
+            value: 0,
+            size,
+            connected_inputs: HashMap::new(),
+            connected_output: None,
+        }
+    }
     /// Connects a cable to a single gate's input.
     pub fn connect_input(mut self, gate_to_connect: &'a mut Gate, input_to_connect: usize) {
         gate_to_connect.set_inputs(vec![(input_to_connect, self.value)]);
@@ -41,7 +49,7 @@ mod tests {
             value: 1,
             size: 1,
             connected_inputs: HashMap::new(),
-            connected_output: &g_out,
+            connected_output: Some(&g_out),
         };
         assert_eq!(g_in.get_output(), 0);
         ca.connect_input(&mut g_in, 0);
