@@ -1,5 +1,4 @@
 use crate::base_gates::gate::Gate;
-use crate::base_gates::gate_type::GateType;
 use std::collections::HashMap;
 
 #[derive(PartialEq)]
@@ -33,7 +32,6 @@ impl<'a> Cable<'a> {
             None => {
                 self.connected_inputs
                     .insert(gate_to_connect, vec![input_to_connect]);
-                ()
             }
         }
     }
@@ -47,6 +45,7 @@ impl<'a> Cable<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::base_gates::gate_type::GateType;
     #[test]
     fn connect_gate() {
         let mut g_in = Gate::new(GateType::Or, 2, 1).unwrap();
