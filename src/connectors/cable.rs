@@ -11,7 +11,7 @@ struct Cable<'a> {
 }
 
 impl<'a> Cable<'a> {
-    pub fn new(size: usize) {
+    pub fn new(size: usize) -> Cable<'a> {
         Cable {
             value: 0,
             size,
