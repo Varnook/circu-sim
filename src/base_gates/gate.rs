@@ -54,6 +54,10 @@ impl Gate {
         Ok(())
     }
 
+    pub fn get_output(&self) -> u64 {
+        self.output
+    }
+
     fn logic(&mut self) {
         let operation = match self.gate_type {
             GateType::And => |a, b| a & b,
