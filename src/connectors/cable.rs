@@ -19,6 +19,7 @@ impl<'a> Cable<'a> {
             connected_output: None,
         }
     }
+
     /// Connects a cable to a single gate's input.
     pub fn connect_input(mut self, gate_to_connect: &'a mut Gate, input_to_connect: usize) {
         gate_to_connect.set_inputs(vec![(input_to_connect, self.value)]);
@@ -35,6 +36,11 @@ impl<'a> Cable<'a> {
                 ()
             }
         }
+    }
+
+    pub fn connect_output(mut self, gate_to_connect: &'a Gate) {
+        self.connected_output = Some(gate_to_connect);
+        self.value = gate_to_connect.get_output();
     }
 }
 
