@@ -22,10 +22,16 @@ impl<'a> Cable<'a> {
 
     /// Connects a cable to a single gate's input.
     pub fn connect_input(
-        mut self,
+        &mut self,
         gate_to_connect: &'a mut Gate,
         input_to_connect: usize,
     ) -> Result<(), GateError> {
+        // Make sure the output is updated
+        self.value = match self.connected_output {
+            Some(output) => output.get_output(),
+            None => 0
+        };
+
         gate_to_connect.set_inputs(vec![(input_to_connect, self.value)])?;
 
         match self.connected_inputs.get_mut(gate_to_connect) {
@@ -42,7 +48,7 @@ impl<'a> Cable<'a> {
         Ok(())
     }
 
-    pub fn connect_output(mut self, gate_to_connect: &'a Gate) {
+    pub fn connect_output(&mut self, gate_to_connect: &'a Gate) {
         self.connected_output = Some(gate_to_connect);
         self.value = gate_to_connect.get_output();
     }
@@ -55,13 +61,9 @@ mod tests {
     #[test]
     fn connect_gate() {
         let mut g_in = Gate::new(GateType::Or, 2, 1).unwrap();
-        let g_out = Gate::new(GateType::Xor, 3, 1).unwrap();
-        let ca = Cable {
-            value: 1,
-            size: 1,
-            connected_inputs: HashMap::new(),
-            connected_output: Some(&g_out),
-        };
+        let g_out = Gate::try_from((GateType::Xor, 3, 1, [1])).unwrap();
+        let mut ca = Cable::new(1); 
+        ca.connect_output(&g_out);
         assert_eq!(g_in.get_output(), 0);
         ca.connect_input(&mut g_in, 0);
         assert_eq!(g_in.get_output(), 1);
